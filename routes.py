@@ -77,7 +77,7 @@ def clock_in():
     save_clock_in_to_db(user, clock_in_time)
     return redirect(url_for('routes.attendance', user=user))
 
-@bp.route('\clocl-out', methods=['POST'])
+@bp.route('/clock-out', methods=['POST'])
 def clock_out():
     user = request.form.get('user')
     clock_out_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

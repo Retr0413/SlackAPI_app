@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイムレコーダー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Free10タイムレコーダー</h1>
+        <div class="clock">
+            <p class="date">2018/12/18(火)</p>
+            <p class="time">9:56</p>
+        </div>
+        <div class="button-group">
+            <form action="{{ url_for('routes.clock_in') }}" method="POST">
+                <button type="submit" class="btn">出勤</button>
+            </form>
+            
+            <form action="{{ url_for('routes.clock_out') }}" method="POST">
+                <button type="submit" class="btn">退勤</button>
+            </form>            
+        </div>
+        <div class="side-buttons">
+            <button class="side-btn">出勤簿</button>
+            <button class="side-btn">管理画面</button>
+        </div>
+        <button class="exit-btn">終了</button>
+    </div>
+</body>
+</html>
