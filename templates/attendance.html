@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出勤簿</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>出勤簿</h1>
+        {% if record %}
+        <p>{{ record.user_name }} さんの最新の出勤記録:</p>
+        <ul>
+            <li>出勤時間: {{ record.clock_in_time }}</li>
+            <li>退勤時間: {{ record.clock_out_time or '未退勤' }}</li>
+        </ul>
+        {% else %}
+        <p>出勤記録が見つかりません。</p>
+        {% endif %}
+        <a href="{{ url_for('routes.index') }}">戻る</a>
+    </div>
+</body>
+</html>

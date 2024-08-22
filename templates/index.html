@@ -15,10 +15,12 @@
         </div>
         <div class="button-group">
             <form action="{{ url_for('routes.clock_in') }}" method="POST">
+                <input type="hidden" name="user" value="{{ user_name }}"> <!-- ユーザー名を設定 -->
                 <button type="submit" class="btn">出勤</button>
             </form>
             
             <form action="{{ url_for('routes.clock_out') }}" method="POST">
+                <input type="hidden" name="user" value="{{ user_name }}"> <!-- ユーザー名を設定 -->
                 <button type="submit" class="btn">退勤</button>
             </form>            
         </div>

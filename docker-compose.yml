@@ -10,14 +10,14 @@ services:
     environment:
       - MYSQL_HOST=db
       - MYSQL_USER=root
-      - MYSQL_PASSWORD=password
+      - MYSQL_PASSWORD=Hayato0623
       - MYSQL_DATABASE=slack_attendance
 
   db:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: Hayato0623
       MYSQL_DATABASE: slack_attendance
     volumes:
       - mysql_data:/var/lib/mysql
