@@ -1,0 +1,7 @@
+{
+    "tasks.autoDetect": "on",
+    "task.runOn": "folderOpen",
+    "workbench.startupEditor": "none",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000
+}

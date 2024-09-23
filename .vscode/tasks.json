@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Docker Containers",
+            "type": "shell",
+            "command": "docker-compose up -d",
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "detail": "This task runs docker-compose to start the containers."
+        }
+    ]
+}

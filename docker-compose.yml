@@ -1,27 +1,18 @@
-version: '3.8'
-
+version: '3'
 services:
   web:
     build: .
     ports:
       - "5000:5000"
-    depends_on:
-      - db
+    volumes:
+      - .:/workspace
+    command: python app.py
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=Hayato0623
-      - MYSQL_DATABASE=slack_attendance
-
+      - FLASK_ENV=development
   db:
     image: mysql:8.0
-    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: Hayato0623
+      MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: slack_attendance
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
-volumes:
-  mysql_data:
+    ports:
+      - "3306:3306"

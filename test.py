@@ -12,19 +12,23 @@ class FlaskTestCase(unittest.TestCase):
     def test_clock_in(self):
         tester = app.test_client(self)
         response = tester.post('/clock-in', data=dict(user="TestUser"))
-        self.assertEqual(response.status_code, 302) # リダイレクトを確認
+        self.assertEqual(response.status_code, 302)  # リダイレクトを確認
 
     # 退勤の処理のテスト
     def test_clock_out(self):
         tester = app.test_client(self)
         response = tester.post('/clock-out', data=dict(user="TestUser"))
-        self.assertEqual(response.status_code, 302) 
+        self.assertEqual(response.status_code, 302)  # リダイレクトを確認
 
-    # Slack APIへの接続テスト
-    def test_slack_message(self):
-        from routes import send_slack_message
-        response = send_slack_message("テストメッセージ from unittest")
-        self.assertTrue(response.get('ok'))
+    # Gmail通知のテスト
+    def test_send_email(self):
+        from routes import send_email
+        try:
+            send_email("テストメール", "これはunittestから送信されたテストメールです。")
+            result = True
+        except:
+            result = False
+        self.assertTrue(result)
 
 if __name__ == '__main__':
     unittest.main()

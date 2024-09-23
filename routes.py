@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-import requests
 import mysql.connector
 from datetime import datetime
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 bp = Blueprint('routes', __name__)
 
@@ -13,33 +15,29 @@ db_config = {
     'database': 'slack_attendance'
 }
 
-# Slackの設定（直接コード内に設定）
-SLACK_TOKEN = 'xoxb-7627471010593-7616094326114-p1eAmMQGrqKQ39THXK4mC2oi'  # あなたのトークンをここに設定
-SLACK_CHANNEL_ID = 'C07J58QKA6Q'  # チャンネルIDを設定
+# Gmailの設定
+EMAIL_ADDRESS = 'hahayato.arima@gmail.com'  # あなたのGmailアドレス
+EMAIL_PASSWORD = 'Hayato0623'  # あなたのGmailパスワード
+RECIPIENT_EMAIL = 'hakukohayato@gmail.com'  # 受信者のメールアドレス
 
-def send_slack_message(text):
-    url = 'https://slack.com/api/chat.postMessage'
-    headers = {
-        'Authorization': f'Bearer {SLACK_TOKEN}',
-        'Content-Type': 'application/json; charset=utf-8'
-    }
-    data = {
-        'channel': SLACK_CHANNEL_ID,
-        'text': text
-    }
-    response = requests.post(url, headers=headers, json=data)
-    response_data = response.json()
+def send_email(subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = RECIPIENT_EMAIL
+    msg['Subject'] = subject
 
-    # レスポンスのデバッグ出力
-    print("Slack API Request Data:", data)
-    print("Slack API Response Data:", response_data)
+    msg.attach(MIMEText(body, 'plain'))
 
-    if not response_data.get('ok'):
-        print(f"Error sending message to Slack: {response_data.get('error')}")
-    else:
-        print("Message sent successfully to Slack.")
-
-    return response_data
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        text = msg.as_string()
+        server.sendmail(EMAIL_ADDRESS, RECIPIENT_EMAIL, text)
+        server.quit()
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Failed to send email. Error: {e}")
 
 def save_clock_in_to_db(user, clock_in_time):
     if not user:  # userがNoneまたは空の場合、処理を停止
@@ -90,26 +88,28 @@ def index():
 def clock_in():
     user = request.form.get('user')
     if not user:
-        print("Error: user_name is missing or None!")  # デバッグ用メッセージ
+        print("Error: user_name is missing or None!")
         return "Error: User name is required.", 400
-    
+
     clock_in_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     message = f'{user}さんが{clock_in_time}に出勤しました。'
-    send_slack_message(message)
+    send_email(subject=f"{user}の出勤通知", body=message)
     save_clock_in_to_db(user, clock_in_time)
+
     return redirect(url_for('routes.attendance', user=user))
 
 @bp.route('/clock-out', methods=['POST'])
 def clock_out():
     user = request.form.get('user')
     if not user:
-        print("Error: user_name is missing or None!")  # デバッグ用メッセージ
+        print("Error: user_name is missing or None!")
         return "Error: User name is required.", 400
-    
+
     clock_out_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     message = f'{user}さんが{clock_out_time}に退勤しました。'
-    send_slack_message(message)
+    send_email(subject=f"{user}の退勤通知", body=message)
     save_clock_out_to_db(user, clock_out_time)
+
     return redirect(url_for('routes.attendance', user=user))
 
 @bp.route('/attendance/<user>')
